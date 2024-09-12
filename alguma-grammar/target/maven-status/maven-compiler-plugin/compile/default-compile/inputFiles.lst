@@ -1,0 +1,11 @@
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/src/main/java/br/ufscar/dc/compiladores/alguma/grammar/Principal.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/src/main/java/br/ufscar/dc/compiladores/alguma/grammar/AlgumaSemanticoUtils.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/target/generated-sources/antlr4/br/ufscar/dc/compiladores/alguma/grammar/AlgumaGrammarListener.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/src/main/java/br/ufscar/dc/compiladores/alguma/grammar/TabelaDeSimbolos.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/target/generated-sources/antlr4/br/ufscar/dc/compiladores/alguma/grammar/AlgumaGrammarParser.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/src/main/java/br/ufscar/dc/compiladores/alguma/grammar/AlgumaSemantico.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/target/generated-sources/antlr4/br/ufscar/dc/compiladores/alguma/grammar/AlgumaGrammarLexer.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/src/main/java/br/ufscar/dc/compiladores/alguma/grammar/Escopos.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/target/generated-sources/antlr4/br/ufscar/dc/compiladores/alguma/grammar/AlgumaGrammarBaseVisitor.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/target/generated-sources/antlr4/br/ufscar/dc/compiladores/alguma/grammar/AlgumaGrammarBaseListener.java
+/home/lara/Documentos/T4-Construcao-Compiladores/alguma-grammar/target/generated-sources/antlr4/br/ufscar/dc/compiladores/alguma/grammar/AlgumaGrammarVisitor.java

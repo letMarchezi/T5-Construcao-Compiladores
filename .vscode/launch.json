@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Principal",
+            "request": "launch",
+            "mainClass": "br.ufscar.dc.compiladores.alguma.grammar.Principal",
+            "projectName": "alguma-grammar",
+            "args": [
+                "C:\\Users\\letic\\OneDrive\\Documentos\\UFSCAR\\Compiladores_2023_1\\T5-Construcao-Compiladores\\alguma-grammar\\casos-de-teste\\5.casos_teste_t5\\1.entrada\\1.declaracao_leitura_impressao_inteiro.alg",
+                "C:\\Users\\letic\\OneDrive\\Documentos\\UFSCAR\\Compiladores_2023_1\\T5-Construcao-Compiladores\\alguma-grammar\\tmp\\saida.txt"
+            ]
+        }
+    ]
+}
