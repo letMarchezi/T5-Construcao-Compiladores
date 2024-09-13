@@ -241,15 +241,43 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
 
     @Override
     public Void visitCmdSe(AlgumaGrammarParser.CmdSeContext ctx) {
-        printTabs();  
-        System.out.println("se " + ctx.expressao().getText() + " entao");
-        tab_spaces++; 
-        visitChildren(ctx);
-        tab_spaces--;  
         printTabs();
-        System.out.println("fim_se");
+        tab_spaces++; 
+    
+        // Imprime 'if'
+        codigoC.append("if (");
+
+        // Visita a expressão condicional (exemplo: '4 > 3')
+        List<Result> condicao = determinarTipoExpressao(ctx.expressao());
+        for (int i = 0; i < condicao.size(); i++) {
+            Result var = condicao.get(i);
+            if (var.ident != null) {
+                codigoC.append(var.ident);  // Caso seja identificador
+            } else if (var.value != null) {
+                codigoC.append(var.value);  // Caso seja literal ou numérico
+            }
+
+            // Adiciona operador se existir
+            if (i < condicao.size() - 1) {
+                codigoC.append(" > ");  // Exemplo: >
+            }
+        }
+
+        // Fecha a condicional
+        codigoC.append(") {\n");
+        
+        printTabs();
+        // Gera o código para o corpo da condicional
+        for (var cmd : ctx.cmd()) {
+            visit(cmd);  // Visita cada comando
+        }
+        tab_spaces--;
+        // Fecha o bloco
+        printTabs();
+        codigoC.append("}\n");
         return null;
     }
+
 
     @Override
     public Void visitCmdEnquanto(AlgumaGrammarParser.CmdEnquantoContext ctx) {
@@ -333,13 +361,19 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
         StringBuilder nome_params = new StringBuilder();
         StringBuilder literals = new StringBuilder("\"");
         boolean teve_cadeia = false;
+        int count_params=0;
         for (int i=0; i < ctx.expressao().size(); i++){
             var exp = ctx.expressao(i);
             //var variaveis_dados = determinarTipoExpressao(exp);
             var variaveis = determinarTipoExpressao(exp);
             for (int j=0; j<variaveis.size();j++){
+                count_params++;
                 var variavel_dados = variaveis.get(j);
                 
+                if(teve_cadeia){
+                    nome_params.append(",");
+                    teve_cadeia = false;
+                }
                 if (variavel_dados.tipo == AlgumaGrammar.INTEIRO){
                     // não há operação
                     if(variavel_dados.operacao == null){
@@ -367,13 +401,11 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                     literals.append(StringUtils.strip(variavel_dados.value,"\""));
                     teve_cadeia = true;
                 }
-                if(teve_cadeia)
-                nome_params.append(",");
-                teve_cadeia = false;
+                
             }   
         }
         literals.append("\"");
-        codigoC.append(("printf("+literals.toString()+","+nome_params.toString()+");").trim()+"\n");
+        codigoC.append(("printf("+literals.toString()+(count_params>1 ? "," : "")+nome_params.toString()+");").trim()+"\n");
         
         //codigoC.append("printf(\""+tipoLer+"\","+variavel.ident+");\n");
 

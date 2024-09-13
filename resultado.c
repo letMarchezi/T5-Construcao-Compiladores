@@ -2,9 +2,8 @@
 #include <stdlib.h>
 
 int main() {
-	float x, y;
-	scanf("%f",&x);
-	y = x + 5.0;
-	printf("%f",y);
+	if (4) {
+				printf("4 eh maior do que 3",);
+	}
 	return 0;
 }
