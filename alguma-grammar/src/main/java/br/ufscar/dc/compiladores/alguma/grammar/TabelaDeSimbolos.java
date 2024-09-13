@@ -25,14 +25,14 @@ public class TabelaDeSimbolos {
         ARRAY
     }
 
-    class EntradaTabelaDeSimbolos {
+    public class EntradaTabelaDeSimbolos {
         String nome;
         AlgumaGrammar tipo;
         TipoEntrada tipoEnt;
         boolean flag_ponteiro = false;
         int tamanhoArray = -1;
 
-        private EntradaTabelaDeSimbolos(String nome, AlgumaGrammar tipo, TipoEntrada tipoEnt, boolean flag_ponteiro, int tamanhoArray) {
+        public EntradaTabelaDeSimbolos(String nome, AlgumaGrammar tipo, TipoEntrada tipoEnt, boolean flag_ponteiro, int tamanhoArray) {
             this.nome = nome;
             this.tipo = tipo;
             this.tipoEnt = tipoEnt;

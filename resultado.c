@@ -1,5 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-int main(){
-	x int;
+
+int main() {
+	float x, y;
+	scanf("%f", &x);
+	scanf("%f", &y);
+	printf("%f",null);
+	return 0;
 }
