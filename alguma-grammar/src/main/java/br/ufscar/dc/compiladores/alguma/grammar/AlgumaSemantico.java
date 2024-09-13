@@ -132,7 +132,6 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
         // Caso 1: Declaração de variável
         if (ctx.getText().startsWith("declare")) {
             
-            //System.out.println(ctx.variavel().identificador());
 
             // Caso 1.1: A declaração possui definição de registro
             // Etapa: Para cada atributo do registro, adiciona 'variavel.atributo' com tipo do atributo
@@ -141,7 +140,7 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                 //("Entrou no Caso 1.1!");
                 for (var variavel : ctx.variavel().identificador()){
                     //System.out.println(variavel.getText());
-                    System.out.println("\tVARIAVEL_REGISTRO: '"+variavel.getText() +"' com tipo "+ctx.variavel().tipo().getStart().getText());
+                    //System.out.println("\tVARIAVEL_REGISTRO: '"+variavel.getText() +"' com tipo "+ctx.variavel().tipo().getStart().getText());
                     // Adiciona a variável como registro
                     adicionaVariavelTabela(variavel.IDENT(0).getText(),
                         ctx.variavel().tipo().getStart().getText(),
@@ -150,10 +149,10 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                                     TipoEntrada.VARIAVEL,
                                         -1);
 
-                    System.out.println(variavel.IDENT(0).getText() + " " + 
-                        ctx.variavel().tipo().getStart().getText() + " " + 
-                        variavel.getStart() + " " + 
-                        ctx.variavel().tipo().getStart() );
+                    // System.out.println(variavel.IDENT(0).getText() + " " + 
+                    //     ctx.variavel().tipo().getStart().getText() + " " + 
+                    //     variavel.getStart() + " " + 
+                    //     ctx.variavel().tipo().getStart() );
                             
                     for(var variavel_registro: ctx.variavel().tipo().registro().variavel()){ 
                         //adicionaVariavelTabela(variavel.IDENT(0).getText(), variavel_registro.tipo().getText(), ident.getStart(), variavel_registro.tipo().getStart(), TipoEntrada.VARIAVEL, -1);    
@@ -167,10 +166,10 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                                         variavel_registro.tipo().getStart(), 
                                             TipoEntrada.VARIAVEL, -1);
                         
-                            System.out.println("\t\tVisit Declaracao LOCAL: Variavel '"+variavel.IDENT(0).getText() + "." + ident.getText()+"'' adicionada à tabela com o tipo "+variavel_registro.tipo().getText());
-                            System.out.println("\t\t\tIdent variavel registro '"+ident.getText() +"' com tipo "+variavel_registro.tipo().getText());
-                            System.out.println("\t\t\t\tExiste a variavel '"+variavel.IDENT(0).getText()+"'?"+tabela.existe(variavel.IDENT().get(0).getText())+ " e o tipo eh: "+tabela.verificar(variavel.IDENT(0).getText()));    
-                            System.out.println("\t\t\t\tExiste o atributo da variavel '"+nomeVariavel+"'?"+tabela.existe(nomeVariavel) + " e o tipo eh: "+tabela.verificar(nomeVariavel));    
+                            // System.out.println("\t\tVisit Declaracao LOCAL: Variavel '"+variavel.IDENT(0).getText() + "." + ident.getText()+"'' adicionada à tabela com o tipo "+variavel_registro.tipo().getText());
+                            // System.out.println("\t\t\tIdent variavel registro '"+ident.getText() +"' com tipo "+variavel_registro.tipo().getText());
+                            // System.out.println("\t\t\t\tExiste a variavel '"+variavel.IDENT(0).getText()+"'?"+tabela.existe(variavel.IDENT().get(0).getText())+ " e o tipo eh: "+tabela.verificar(variavel.IDENT(0).getText()));    
+                            // System.out.println("\t\t\t\tExiste o atributo da variavel '"+nomeVariavel+"'?"+tabela.existe(nomeVariavel) + " e o tipo eh: "+tabela.verificar(nomeVariavel));    
                 
                         }
                         
@@ -179,12 +178,10 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                 }
             // Caso 1.2: A declaração não possui definição de novo registro        
             } else { 
-                System.out.println("\tEntrou no caso 1.2!");
                 tipoVariavel = ctx.variavel().tipo().getText();
                 //System.out.println(tipoVariavel);
                 // Caso 1.2.1: verifica se o tipo é um registro já declarado
                 if (tabelaRegistro.containsKey(tipoVariavel)) {
-                    System.out.println("\t\tEntrou no caso 1.2.1!");
                     ArrayList<String> variavelRegistro = tabelaRegistro.get(tipoVariavel);
 
                     for (AlgumaGrammarParser.IdentificadorContext ic: ctx.variavel().identificador()) {
@@ -208,8 +205,7 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                         nomeVariavel = identc.IDENT(0).getText();
                         TipoEntrada tipo_ent = TipoEntrada.VARIAVEL;
                         int comprimentoArray = -1;
-                        System.out.println("\t\tTentando mostrar " + nomeVariavel + ". Dimensao: " + identc.dimensao().getText());
-                            
+
                         if (identc.dimensao() != null && !identc.dimensao().exp_aritmetica().isEmpty()) {
                             comprimentoArray = identc.dimensao().exp_aritmetica().size();
     
@@ -225,10 +221,10 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                             AlgumaSemanticoUtils.adicionarErroSemantico(identc.getStart(), 
                                 "identificador " + nomeVariavel + " ja declarado anteriormente");
                         else{
-                            System.out.println("\t\t\tAdicionando "+nomeVariavel+" de tipo "+tipoVariavel+". Com comprimento "+comprimentoArray);
+                            //System.out.println("\t\t\tAdicionando "+nomeVariavel+" de tipo "+tipoVariavel+". Com comprimento "+comprimentoArray);
                         
                             adicionaVariavelTabela(nomeVariavel, tipoVariavel, identc.getStart(), ctx.variavel().tipo().getStart(), tipo_ent, comprimentoArray); 
-                            System.out.println("Buscando "+nomeVariavel+" na tabela. Tamanho: "+tabela.verificarTamanhoArray(nomeVariavel));
+                            //System.out.println("Buscando "+nomeVariavel+" na tabela. Tamanho: "+tabela.verificarTamanhoArray(nomeVariavel));
                         }
                     }
                 }
@@ -278,15 +274,14 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
         String funcName = ctx.IDENT().getText();
         TipoEntrada tipoEnt;
 
-        System.out.println("Nome da funcao: "+funcName);
         // Extração do tipo de retorno
         TabelaDeSimbolos.AlgumaGrammar tiposRetorno = TabelaDeSimbolos.AlgumaGrammar.VOID;
         if (ctx.tipo_estendido() != null) {
             tiposRetorno = determinarTipoAlgumaGrammar(ctx.tipo_estendido().getText());
-            System.out.println("O tipo de retorno da função é:"+tiposRetorno);
+            //System.out.println("O tipo de retorno da função é:"+tiposRetorno);
             tipoEnt = TipoEntrada.FUNCAO;
         }else{
-            System.out.println("É procedimento!");
+            //System.out.println("É procedimento!");
             tiposRetorno = AlgumaGrammar.VOID;
             tipoEnt = TipoEntrada.PROCEDIMENTO;
         }
@@ -313,13 +308,11 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                         for (var ident : param.identificador()) {
                             String nomeVariavel = ident.getText();
                             tabelaEscopos.adicionar(nomeVariavel, paramType, TipoEntrada.VARIAVEL, false, -1);
-                            System.out.println("Adicionando variável: " + nomeVariavel + " com tipo " + TipoEntrada.VARIAVEL);
                             for (int i = 0; i < variavelRegistro.size(); i += 2) {
                                 String nomeAtributo = nomeVariavel + "." + variavelRegistro.get(i);
                                 AlgumaGrammar tipoAtributo = determinarTipoAlgumaGrammar(variavelRegistro.get(i + 1));
                                 tabelaEscopos.adicionar(nomeAtributo, tipoAtributo, TipoEntrada.VARIAVEL, false, -1);
-                                System.out.println("Adicionando atributo do registro: " + nomeAtributo + " com tipo " + tipoAtributo);
-                            }
+                                }
                         }
                     } else {
                         AlgumaSemanticoUtils.adicionarErroSemantico(param.getStart(),
@@ -359,96 +352,11 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
         return super.visitDecl_local_global(ctx);
     }
 
-    // Visita atribuições
-    // @Override
-    // public Void visitCmdAtribuicao(AlgumaGrammarParser.CmdAtribuicaoContext ctx) {
-    //     tabela = escoposAninhados.obterEscopoAtual();
-    //     String nomeVariavel = ctx.identificador().getText();
-    //     boolean deferenciacao = ctx.start.getText().equals("^");
-    //     boolean ref_memoria = ctx.expressao().getText().startsWith("&");
-    //     AlgumaGrammar tipoExpressao = AlgumaSemanticoUtils.verificarTipo(tabela, ctx.expressao());
-
-    //     //System.out.println("Visitando atribuição! Variável+" + ctx.identificador());
-    //     //System.out.println("Inicio da expressao: "+ctx.start.getText()+".// ^?"+isDereferenced);
-        
-    //     if (tipoExpressao != AlgumaGrammar.INVALIDO) {
-    //         // Caso a variável não tenha sido declarada, informa o erro
-    //         if (!tabela.existe(nomeVariavel)) {
-    //             AlgumaSemanticoUtils.adicionarErroSemantico(ctx.identificador().getStart(), 
-    //                 "identificador " + ctx.identificador().getText() + " nao declarado");
-    //         } else {
-    //             // Caso tenha sido declarada, verifica os demais casos
-    //             AlgumaGrammar tipoVar = tabela.verificar(nomeVariavel);
-    //             boolean isPointerVar = tabela.verificar_ponteiro(nomeVariavel);
-    //             //System.out.println("Nome variavel: " + nomeVariavel + ". Tipo variavel:" + tipoVar + ". Pointer?" + isPointerVar);
-    //             //System.out.println("Expressao: " + ctx.expressao() + " . Texto expressao: " + ctx.expressao().getText() + ". Tipo Expressao:" + tipoExpressao);
-
-    //             // Se a variável é um ponteiro há 2 casos:
-    //             if (isPointerVar){
-    //                 /* Caso 1: Há deferenciação. Ex: distancia é ponteiro de int. ^distancia <- 400
-    //                     * Testar se o tipo da variável é o mesmo da expressão.
-    //                     * Testar se a variável é ponteiro.
-    //                     * Erro? incompatível ^ */
-    //                 if (deferenciacao && !ref_memoria) {
-                        
-    //                     if (tipoVar != tipoExpressao)
-    //                         AlgumaSemanticoUtils.adicionarErroSemantico(ctx.identificador().getStart(), 
-    //                             "atribuicao nao compativel para " + ctx.start.getText() + nomeVariavel);
-    //                 }    
-    //                 /* Caso 2: Atribuir o endereço da expressão à variável.
-    //                 * Verificar se há o símbolo &
-    //                 * Verificar se a expressão possui o mesmo tipo da variável
-    //                 * Verificaar se a variável é ponteiro */
-    //                 else if (ref_memoria && !deferenciacao){
-    //                     String identificadorExpressao = extractIndentificadorString(ctx.expressao().getText());
-    //                     // Caso a variável seja um ponteiro e o identificador da expressão não seja null
-    //                     if (identificadorExpressao != null) {
-    //                         // Verifica se o identificador da expressão existe na tabela de símbolos e são
-    //                         // de mesmo tipo
-    //                         AlgumaGrammar tipoId = tabela.verificar(identificadorExpressao);
-    //                         if (tipoId != tipoVar) {
-    //                             AlgumaSemanticoUtils.adicionarErroSemantico(ctx.identificador().getStart(), 
-    //                                 "atribuicao nao compativel para " + nomeVariavel);
-    //                         }
-    //                     }
-                    
-    //                 // Exceções: Erro.
-    //                 } else {
-    //                     AlgumaSemanticoUtils.adicionarErroSemantico(ctx.identificador().getStart(), 
-    //                         "atribuicao nao compativel para " + nomeVariavel);
-    //                 }
-    //             }
-    //             // Caso a variável seja um array
-    //             else if (
-    //                 (ctx.identificador().dimensao() != null) && (!ctx.identificador().dimensao().isEmpty())){
-                    
-    //                 // Verifica o tipo da expressão e do array a receber atribuição 
-    //                 if (!tipoExpressao.equals(tipoVar)){
-    //                     System.out.println("INCOMPATIVEL. Expressao "+ctx.expressao().getText()+". Tipo: "+tipoExpressao+". Variável: "+nomeVariavel+". Tipo array:"+tipoVar);
-    //                     AlgumaSemanticoUtils.adicionarErroSemantico(ctx.identificador().getStart(), 
-    //                         "tipo de atribuicao incompativel para " + nomeVariavel);
-    //                 }
-    //             }
-            
-    //             // Caso a variável não seja ponteiro, verifica apenas o tipo
-    //             // Atribuição entre expressão de tipo inteiro para variável real é compatível
-    //             else if (!(tipoExpressao.name() == "INTEIRO" && tipoVar.name() == "REAL" ) && tipoExpressao != tipoVar){
-                    
-    //                 System.out.println("INCOMPATIVEL. Expressao de tipo: "+tipoExpressao+". Tipo var:"+tipoVar);
-    //                 AlgumaSemanticoUtils.adicionarErroSemantico(ctx.identificador().getStart(), 
-    //                     "tipo de atribuicao incompativel para " + nomeVariavel);
-    //             }
-    //         }
-    //     }
-    //     return super.visitCmdAtribuicao(ctx);
-    // }
-
     public Void visitCmdAtribuicao(AlgumaGrammarParser.CmdAtribuicaoContext ctx) {
         tabela = escoposAninhados.obterEscopoAtual();
         //ctx.identificador().IDENT().forEach(element -> {System.out.println("Identificador:" +element);});
         
         String nomeVariavel = ctx.identificador().IDENT(0).getText();
-        System.out.println("Avaliando a variavel "+nomeVariavel);
         
         boolean deferenciacao = ctx.start.getText().equals("^");
         boolean ref_memoria = ctx.expressao().getText().startsWith("&");
@@ -456,11 +364,10 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
         AlgumaGrammar tipoExpressao = AlgumaSemanticoUtils.verificarTipo(tabela, ctx.expressao());
         AlgumaGrammar tipoVar = null;
 
-        System.out.println("cmdAtribuicao: Variavel: "+nomeVariavel+". Tipo da expressao: "+tipoExpressao+". Nome COMPLETO:"+ctx.identificador().getText()+". Expressao: "+ctx.expressao().getText());
+        //System.out.println("cmdAtribuicao: Variavel: "+nomeVariavel+". Tipo da expressao: "+tipoExpressao+". Nome COMPLETO:"+ctx.identificador().getText()+". Expressao: "+ctx.expressao().getText());
         
         // Caso a variável não tenha sido declarada, informa o erro
         if (!tabela.existe(nomeVariavel)) {
-            System.out.println("\tIsh, não achou o "+nomeVariavel);
             AlgumaSemanticoUtils.adicionarErroSemantico(ctx.identificador().getStart(), 
                 "identificador " + ctx.identificador().getText() + " nao declarado");
         }
@@ -476,7 +383,6 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                 nomeVariavel = nomeVariavel + "." + ctx.identificador().IDENT(1).getText();
             tipoVar = tabela.verificar(nomeVariavel); // Retorna o tipo da variável
             boolean isPointerVar = tabela.verificar_ponteiro(nomeVariavel);
-            System.out.println("\tTipo da variável"+nomeVariavel+": "+tipoVar);
 
 
             if (isPointerVar) { // Verifica se a variável é um ponteiro
@@ -504,8 +410,7 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
             // Trata atribuição de arrays
             else if (ctx.identificador().dimensao() != null && !ctx.identificador().dimensao().exp_aritmetica().isEmpty()) {
                 // Verifica se a expressão tem o mesmo tipo do array
-                System.out.println("\tTipo da expressao: "+tipoExpressao+". Tipo da variavel: "+tipoVar);
-                
+
                 if (!tipoExpressao.equals(tipoVar)) {
                     AlgumaSemanticoUtils.adicionarErroSemantico(ctx.identificador().getStart(), 
                         "atribuicao nao compativel para " + nomeVariavel + ctx.identificador().dimensao().getText());
@@ -536,8 +441,7 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
 
         if (identificador.IDENT().size() > 1) {
             String nomevar = identificador.IDENT(0).getText() + "." + identificador.IDENT(1).getText();
-            System.out.println("Identificador de registro com atributo: " + nomevar);
-            
+
             if (!tabela.existe(nomevar)) 
                 return false;
                 
@@ -598,7 +502,6 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
             
             for (var id : idc.IDENT()) {
                 String nomeVar = id.getText();
-                //System.out.println("Parcela Unaria. Nome var: " + nomeVar);
                 boolean declarado = false;
                 
                 for (var tabela : escoposAninhados.percorrerEscoposAninhados()) {
@@ -629,14 +532,12 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
                 }
             }
             
-            System.out.println("Visitor Unario vendo " + nomeCompleto);
 
             
             // Havendo dimensão, trata como Array
             if (idc.dimensao() != null && !idc.dimensao().exp_aritmetica().isEmpty()) {
                 
                 if (!tabela.existe(nomeCompleto)) {
-                    System.out.println("Encontrou "+nomeCompleto);
                     AlgumaSemanticoUtils.adicionarErroSemantico(idc.IDENT(0).getSymbol(), 
                         "identificador " + nomeCompleto + " nao declarado");
 
@@ -821,7 +722,6 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
         tabela = escoposAninhados.obterEscopoAtual();
         String nomeVariavel = ctx.IDENT().getText();
 
-        System.out.println("Nome da variavel do PARA: "+nomeVariavel);
         if (!tabela.existe(nomeVariavel)) {
             tabela.adicionar(nomeVariavel, TabelaDeSimbolos.AlgumaGrammar.INTEIRO, TipoEntrada.VARIAVEL, false, -1);
     
@@ -850,17 +750,13 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
         // Caso não haja o operador "ou" (op_logico_1) 
         // => há apenas termos lógicos (fatores lógicos e op_logico_2 )
         if (ctx.expressao().op_logico_1().isEmpty()){
-            System.out.println(conditions.fator_logico().size());
             
             // Lê cada condição do comando 'Se'
             for (var fator_logico: conditions.fator_logico()){
-                //System.out.println("\t\tImprimindo 'fator'"+fator_logico.getText());
-                
+
                 // Varre cada uma das expressões
                 for (var exps: fator_logico.parcela_logica().exp_relacional().exp_aritmetica()){
                     for (var termo: exps.termo()){
-                        //System.out.println("\t\t\t\tImprimindo 'termo'"+termo.getText());
-
 
                     }
 
@@ -870,7 +766,6 @@ public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
         }
         // Há operador 'ou':
         else{
-            //System.out.println("To-do");
         }
 
         AlgumaSemanticoUtils.verificarTipo(tabela, ctx.expressao());

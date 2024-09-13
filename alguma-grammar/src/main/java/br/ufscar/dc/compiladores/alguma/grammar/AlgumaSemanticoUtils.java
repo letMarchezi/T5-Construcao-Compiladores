@@ -52,7 +52,6 @@ public class AlgumaSemanticoUtils {
         AlgumaGrammar aux = null;
         for (var ta : ctx.termo()) {
             AlgumaGrammar atual = verificarTipo(tabela, ta);
-            System.out.println("Verifica Tipo Exp Arit: Atual: "+atual+". Prévio:" +aux);
             if (atual == AlgumaGrammar.INVALIDO){
                 aux = AlgumaGrammar.INVALIDO;
                 break;
@@ -69,7 +68,6 @@ public class AlgumaSemanticoUtils {
                 break;
             }
         }
-        System.out.println("\n Verifica Tipo Exp AritTipo final: "+aux);
         return aux;
     }
 
@@ -138,7 +136,6 @@ public class AlgumaSemanticoUtils {
             // tipo
             if (tabela.existe(nome)){
                 retorno = tabela.verificar(nome);
-                System.out.println("Verificar Tipo identificador: Variável "+nome+" encontrada com tipo "+retorno);
             }
             /*
              * Percorre os escopos aninhados em busca da variável e retorna o tipo. Caso não
@@ -184,7 +181,7 @@ public class AlgumaSemanticoUtils {
     // Verifica o tipo de Expressão Relacional
     public static AlgumaGrammar verificarTipo(TabelaDeSimbolos tabela, AlgumaGrammarParser.Exp_relacionalContext ctx) {
         AlgumaGrammar retorno = verificarTipo(tabela, ctx.exp_aritmetica().get(0));
-        ctx.exp_aritmetica().forEach(element -> {System.out.println("\t\tExpressao aritmetica: "+element.getText());} );
+        //ctx.exp_aritmetica().forEach(element -> {System.out.println("\t\tExpressao aritmetica: "+element.getText());} );
         if (ctx.exp_aritmetica().size() > 1) {
 
             // Verifica o tipo da expressão aritmética
@@ -210,7 +207,6 @@ public class AlgumaSemanticoUtils {
         // analisados são diferentes
 
         for (AlgumaGrammarParser.Termo_logicoContext termoLogico : ctx.termo_logico()) {
-            System.out.println(termoLogico.getText());
             AlgumaGrammar tipoAtual = verificarTipo(tabela, termoLogico);
             
             if (tipoAtual == AlgumaGrammar.INVALIDO)
