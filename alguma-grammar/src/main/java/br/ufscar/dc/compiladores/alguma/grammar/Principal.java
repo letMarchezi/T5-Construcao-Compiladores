@@ -39,30 +39,30 @@ public class Principal {
             ProgramaContext arvore = parser.programa();
             AlgumaSemantico as = new AlgumaSemantico();
             as.visitPrograma(arvore);
-            //AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> System.out.println(s));
-            //AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> buffer.append(s + "\n"));
+            AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> System.out.println(s));
+            AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> buffer.append(s + "\n"));
 
 
             // Chama o gerador de codigo C caso não hajam erros semânticos
             if(AlgumaSemanticoUtils.errosSemanticos.size() == 0 ){
-    
+                System.out.println("Tentando gerar:");
                 GeradorAlgumaC gerador = new GeradorAlgumaC();
                 gerador.visit(arvore);
-    
+                System.out.println("Gerou!");
                 // Obtem o codigo C gerado
-                String codigoC = gerador.getCodigoC();
+                String codigo_C = gerador.getCodigoC();
     
                 // Salva o codigo C em um arquivo
                 // try (FileWriter writer = new FileWriter(args[2])) {
                 //     writer.write(codigoC);
                 // }
 
-                buffer.append(codigoC);
+                buffer.append(codigo_C);
             }
 
         } catch (Exception ex) {
             // Detecção de exceções
-            //System.err.println("Erro: " + ex.getMessage());
+            System.err.println("Erro: " + ex.getMessage());
             buffer.append("Fim da compilacao\n");
         }
 

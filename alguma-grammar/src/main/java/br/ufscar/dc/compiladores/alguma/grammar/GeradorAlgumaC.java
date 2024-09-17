@@ -419,7 +419,8 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                         nome_params.append(variavel_dados.ident+variavel_dados.operacao);
                     }
                 }else if (variavel_dados.tipo==AlgumaGrammar.LITERAL && variavel_dados.value != null){
-                    literals.append(StringUtils.strip(variavel_dados.value,"\""));
+                    String interm_string = variavel_dados.value.split("\"")[1];
+                    literals.append(interm_string);
                     teve_cadeia = true;
                     
                 }
