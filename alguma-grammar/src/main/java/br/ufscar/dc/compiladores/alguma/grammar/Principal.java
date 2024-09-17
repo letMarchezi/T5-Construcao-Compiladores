@@ -39,8 +39,8 @@ public class Principal {
             ProgramaContext arvore = parser.programa();
             AlgumaSemantico as = new AlgumaSemantico();
             as.visitPrograma(arvore);
-            AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> System.out.println(s));
-            AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> buffer.append(s + "\n"));
+            //AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> System.out.println(s));
+            //AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> buffer.append(s + "\n"));
 
 
             // Chama o gerador de codigo C caso não hajam erros semânticos
@@ -50,21 +50,23 @@ public class Principal {
                 gerador.visit(arvore);
     
                 // Obtem o codigo C gerado
-                String codigoC = gerador.getHtml();
+                String codigoC = gerador.getCodigoC();
     
                 // Salva o codigo C em um arquivo
-                try (FileWriter writer = new FileWriter("resultado.c")) {
-                    writer.write(codigoC);
-                }
+                // try (FileWriter writer = new FileWriter(args[2])) {
+                //     writer.write(codigoC);
+                // }
+
+                buffer.append(codigoC);
             }
 
         } catch (Exception ex) {
             // Detecção de exceções
-            System.err.println("Erro: " + ex.getMessage());
+            //System.err.println("Erro: " + ex.getMessage());
+            buffer.append("Fim da compilacao\n");
         }
 
         // Escreve o resultado do buffer no arquivo de saída
-        buffer.append("Fim da compilacao\n");
         writeOutputToFile(args[1]);
     }
 

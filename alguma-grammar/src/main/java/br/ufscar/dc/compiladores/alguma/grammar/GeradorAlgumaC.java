@@ -8,9 +8,6 @@ import br.ufscar.dc.compiladores.alguma.grammar.TabelaDeSimbolos.AlgumaGrammar;
 import br.ufscar.dc.compiladores.alguma.grammar.TabelaDeSimbolos.EntradaTabelaDeSimbolos;
 import br.ufscar.dc.compiladores.alguma.grammar.TabelaDeSimbolos.TipoEntrada;
 
-import br.ufscar.dc.compiladores.alguma.grammar.AlgumaSemantico;
-import br.ufscar.dc.compiladores.alguma.grammar.AlgumaGrammarParser.Parcela_unarioContext;
-
 import org.apache.commons.lang3.StringUtils;
 public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
     private StringBuilder codigoC = new StringBuilder();
@@ -25,7 +22,7 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
             codigoC.append("\t");
     }
 
-    public String getHtml() {
+    public String getCodigoC() {
         return codigoC.toString();
     }
 
@@ -90,51 +87,60 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                 AlgumaGrammarParser.Parcela_logicaContext parcelaLogica = fatorLogico.parcela_logica();
                 if (parcelaLogica.exp_relacional() != null) {
                     AlgumaGrammarParser.Exp_relacionalContext expRelacional = parcelaLogica.exp_relacional();
-                    
-                    if (expRelacional.exp_aritmetica() != null) {
-                        AlgumaGrammarParser.Exp_aritmeticaContext expAritmetica = expRelacional.exp_aritmetica(0);
-                        
-                        if (expAritmetica.termo() != null) {
-                            List<AlgumaGrammarParser.TermoContext> termos = expAritmetica.termo();
-                            
-                            for (int i=0;i<termos.size();i++){
-                                var termo = termos.get(i);
-                                if (termo.fator() != null) {
-                                    List<AlgumaGrammarParser.FatorContext> fatores = termo.fator();
-                                    
-                                    for (int j=0; j<fatores.size();j++){
-                                        var fator = fatores.get(j); 
-                                        if (fator.parcela() != null) {
-                                            AlgumaGrammarParser.ParcelaContext parcela = fator.parcela(0);
-                                            Result resultado_parcela = visitFatorIdent(parcela);
-                                            if (expAritmetica.op1(j)!=null && i==0){
-                                                String tipo_op = expAritmetica.op1(j).getText();
-                                                resultado_parcela.operacao = tipo_op;
+                    String op_rel = null;
+                    if (expRelacional.op_relacional() != null){
+                        op_rel = expRelacional.op_relacional().getText();
+                    }
+                        if (expRelacional.exp_aritmetica() != null) {
+                            List<AlgumaGrammarParser.Exp_aritmeticaContext> expAritmetica = expRelacional.exp_aritmetica();
+                        for (int k=0; k<expAritmetica.size(); k++){ 
+                            if (expAritmetica.get(k).termo() != null) {
+                                List<AlgumaGrammarParser.TermoContext> termos = expAritmetica.get(k).termo();
+                                
+                                for (int i=0;i<termos.size();i++){
+                                    var termo = termos.get(i);
+                                    if (termo.fator() != null) {
+                                        List<AlgumaGrammarParser.FatorContext> fatores = termo.fator();
+                                        
+                                        for (int j=0; j<fatores.size();j++){
+                                            var fator = fatores.get(j); 
+                                            if (fator.parcela() != null) {
+                                                AlgumaGrammarParser.ParcelaContext parcela = fator.parcela(0);
+                                                Result resultado_parcela = visitFatorIdent(parcela);
+                                                if (expAritmetica.get(k).op1(j)!=null && i==0){
+                                                    String tipo_op = expAritmetica.get(k).op1(j).getText();
+                                                    resultado_parcela.operacao = tipo_op;
+                                                }
+                                                if (termo.op2(j)!=null && i==1){
+                                                    String tipo_op = termo.op2(j).getText();
+                                                    resultado_parcela.operacao = tipo_op;
+                                                }
+                                                if (fator.op3(j)!=null && i==2){
+                                                    String tipo_op = fator.op3(j).getText();
+                                                    resultado_parcela.operacao = tipo_op;
+                                                }
+                                                if(op_rel != null){
+                                                    resultado_parcela.operacao = op_rel;
+                                                    op_rel = null;
+                                                }
+                                                variaveis.add(resultado_parcela);
                                             }
-                                            if (termo.op2(j)!=null && i==1){
-                                                String tipo_op = termo.op2(j).getText();
-                                                resultado_parcela.operacao = tipo_op;
-                                            }
-                                            if (fator.op3(j)!=null && i==2){
-                                                String tipo_op = fator.op3(j).getText();
-                                                resultado_parcela.operacao = tipo_op;
-                                            }
-                                            variaveis.add(resultado_parcela);
                                         }
                                     }
-
                                 }
-                            }
-                            if (termos.size() > 1) {
                                 
-                                AlgumaGrammar finalTipo = verificarTipo(variaveis);
-                                for (int i=0; i<termos.size(); i++){
-                                    variaveis.get(i).tipo = finalTipo;
-                                    System.out.println(variaveis.get(i).tipo);
+                                if (termos.size() > 1) {
+                                    
+                                    AlgumaGrammar finalTipo = verificarTipo(variaveis);
+                                    for (int i=0; i<termos.size(); i++){
+                                        variaveis.get(i).tipo = finalTipo;
+                                        //System.out.println(variaveis.get(i).tipo);
+                                    }
                                 }
+                                
                             }
-                            return variaveis;
                         }
+                        return variaveis;
                     }
                 }
             }
@@ -215,8 +221,6 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
             printTabs();
             codigoC.append(tipo_c+" ");
 
-
-            List<String> lista_ident = new ArrayList<>();
             for (int i=0; i<ctx.variavel().identificador().size(); i++){
                 //var ident: ctx.variavel().identificador()
                 var ident = ctx.variavel().identificador(i);
@@ -226,7 +230,7 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                 }
                 if(i>0)
                     decl = decl + ", ";
-                decl = decl + ident.getText();
+                decl = decl + ident.getText()+dimension;
                 
                 //codigoC.append(ident.getText()+""+dimension+";\n");
                 tabela.put(ident.getText(), tab.new EntradaTabelaDeSimbolos(ident.getText(), AlgumaSemantico.determinarTipoAlgumaGrammar(tipo), TipoEntrada.VARIAVEL, false, -1));
@@ -247,34 +251,59 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
         // Imprime 'if'
         codigoC.append("if (");
 
-        // Visita a expressão condicional (exemplo: '4 > 3')
+        //var exp_rel = ctx.expressao().termo_logico(0).fator_logico(0).parcela_logica().exp_relacional();
+        //for (int i=0; i<exp_rel.exp_aritmetica().size(); i++){
         List<Result> condicao = determinarTipoExpressao(ctx.expressao());
-        for (int i = 0; i < condicao.size(); i++) {
-            Result var = condicao.get(i);
-            if (var.ident != null) {
-                codigoC.append(var.ident);  // Caso seja identificador
-            } else if (var.value != null) {
-                codigoC.append(var.value);  // Caso seja literal ou numérico
-            }
+        //for (var termo_expr_relacional: ctx.expressao().termo_logico(0).fator_logico(0).parcela_logica().exp_relacional().children)
+        // Visita a expressão condicional (exemplo: '4 > 3')
+        for (int i=0; i < condicao.size(); i++){    
+            var expressao_var = condicao.get(i);
 
-            // Adiciona operador se existir
-            if (i < condicao.size() - 1) {
-                codigoC.append(" > ");  // Exemplo: >
+            if (expressao_var.ident != null) {
+                codigoC.append(expressao_var.ident);  // Caso seja identificador
+            } else if (expressao_var.value != null) {
+                codigoC.append(expressao_var.value);  // Caso seja literal ou numérico
+                if (expressao_var.operacao != null){
+                    if (expressao_var.operacao.equals("=")){
+                        expressao_var.operacao = "==";
+                    }
+                    codigoC.append(" "+expressao_var.operacao+" ");
+                }
             }
         }
 
-        // Fecha a condicional
+        // Fecha a condição
         codigoC.append(") {\n");
-        
-        printTabs();
-        // Gera o código para o corpo da condicional
-        for (var cmd : ctx.cmd()) {
-            visit(cmd);  // Visita cada comando
+
+        int entaoCmdCount = ctx.getChildCount() > ctx.cmd().size() ? ctx.cmd().size() - 1 : ctx.cmd().size();
+        for (int i = 0; i < entaoCmdCount; i++) {
+            visit(ctx.cmd(i));  // Visita os comandos do bloco 'entao'
         }
+
+
         tab_spaces--;
         // Fecha o bloco
         printTabs();
         codigoC.append("}\n");
+
+        
+        // Imprime o bloco senao
+        if (ctx.getChildCount() > ctx.cmd().size() + 1) {
+            
+            printTabs();
+            codigoC.append("else {\n");
+            tab_spaces++; 
+            
+            // Visita os comandos dentro do bloco 'senao'
+            for (AlgumaGrammarParser.CmdContext cmd : ctx.cmd().subList(ctx.cmd().size() / 2, ctx.cmd().size())) {
+                visit(cmd); 
+            }
+            tab_spaces--;
+            printTabs();
+            codigoC.append("}\n");
+        }
+       
+
         return null;
     }
 
@@ -282,23 +311,23 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
     @Override
     public Void visitCmdEnquanto(AlgumaGrammarParser.CmdEnquantoContext ctx) {
         printTabs();  
-        System.out.println("enquanto " + ctx.expressao().getText() + " faca");
+        //System.out.println("enquanto " + ctx.expressao().getText() + " faca");
         tab_spaces++;  
         visitChildren(ctx);
         tab_spaces--;  
         printTabs();
-        System.out.println("fim_enquanto");
+        //System.out.println("fim_enquanto");
         return null;
     }
 
     public Void visitCmdPara(AlgumaGrammarParser.CmdParaContext ctx) {
         printTabs();
-        System.out.println("para " + ctx.IDENT().getText() + " <- " + ctx.exp_aritmetica(0).getText() + " ate " + ctx.exp_aritmetica(1).getText() + " faca");
+        //System.out.println("para " + ctx.IDENT().getText() + " <- " + ctx.exp_aritmetica(0).getText() + " ate " + ctx.exp_aritmetica(1).getText() + " faca");
         tab_spaces++;
         visitChildren(ctx);
         tab_spaces--;
         printTabs();
-        System.out.println("fim_para");
+        //System.out.println("fim_para");
         return null;
     }
     @Override
@@ -401,11 +430,15 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                     literals.append(StringUtils.strip(variavel_dados.value,"\""));
                     teve_cadeia = true;
                 }
-                
             }   
         }
         literals.append("\"");
-        codigoC.append(("printf("+literals.toString()+(count_params>1 ? "," : "")+nome_params.toString()+");").trim()+"\n");
+        if(!(nome_params.toString().startsWith(","))&&(count_params>0)){
+            literals.append(",");
+        }
+
+        codigoC.append(("printf("+literals.toString()+nome_params.toString()+");").trim()+"\n");
+        //codigoC.append(("printf("+literals.toString()+(count_params>0 ? "," : "")+nome_params.toString()+");").trim()+"\n");
         
         //codigoC.append("printf(\""+tipoLer+"\","+variavel.ident+");\n");
 

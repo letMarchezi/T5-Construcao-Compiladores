@@ -1,23 +1,15 @@
 package br.ufscar.dc.compiladores.alguma.grammar;
 
 
-import br.ufscar.dc.compiladores.alguma.grammar.AlgumaGrammarParser.DeclaracoesContext;
 import br.ufscar.dc.compiladores.alguma.grammar.AlgumaGrammarParser.IdentificadorContext;
 import br.ufscar.dc.compiladores.alguma.grammar.AlgumaGrammarParser.ParcelaContext;
 import br.ufscar.dc.compiladores.alguma.grammar.AlgumaGrammarParser.Parcela_nao_unarioContext;
-import br.ufscar.dc.compiladores.alguma.grammar.AlgumaGrammarParser.Parcela_unarioContext;
-import br.ufscar.dc.compiladores.alguma.grammar.Escopos;
-import br.ufscar.dc.compiladores.alguma.grammar.AlgumaSemanticoUtils;
-import br.ufscar.dc.compiladores.alguma.grammar.TabelaDeSimbolos;
 import br.ufscar.dc.compiladores.alguma.grammar.TabelaDeSimbolos.AlgumaGrammar;
-import br.ufscar.dc.compiladores.alguma.grammar.TabelaDeSimbolos.EntradaTabelaDeSimbolos;
 import br.ufscar.dc.compiladores.alguma.grammar.TabelaDeSimbolos.TipoEntrada;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.antlr.v4.runtime.Token;
 
 public class AlgumaSemantico extends AlgumaGrammarBaseVisitor<Void> {
