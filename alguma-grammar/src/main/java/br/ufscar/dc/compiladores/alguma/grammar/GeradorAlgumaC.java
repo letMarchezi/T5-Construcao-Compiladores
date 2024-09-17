@@ -271,65 +271,45 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                 }
             }
         }
-
         // Fecha a condição
         codigoC.append(") {\n");
 
-        int entaoCmdCount = ctx.getChildCount() > ctx.cmd().size() ? ctx.cmd().size() - 1 : ctx.cmd().size();
-        for (int i = 0; i < entaoCmdCount; i++) {
-            visit(ctx.cmd(i));  // Visita os comandos do bloco 'entao'
+        // int entaoCmdCount = ctx.getChildCount() > ctx.cmd().size() ? ctx.cmd().size() - 1 : ctx.cmd().size();
+        // for (int i = 0; i < entaoCmdCount; i++) {
+        //     visit(ctx.cmd(i));  // Visita os comandos do bloco 'entao'
+        // }
+
+        for (int i = 0; i < ctx.cmd().size(); i++) {
+            if (ctx.getChild(i).getText().equals("fim_se")) {
+                break;
+            }
+            visit(ctx.cmd(i));  // Visit each command in the 'entao' block
         }
-
-
-        tab_spaces--;
         // Fecha o bloco
+        tab_spaces--;
         printTabs();
         codigoC.append("}\n");
-
         
         // Imprime o bloco senao
-        if (ctx.getChildCount() > ctx.cmd().size() + 1) {
+        if (ctx.getText().contains("senao")) {
             
             printTabs();
             codigoC.append("else {\n");
             tab_spaces++; 
             
             // Visita os comandos dentro do bloco 'senao'
-            for (AlgumaGrammarParser.CmdContext cmd : ctx.cmd().subList(ctx.cmd().size() / 2, ctx.cmd().size())) {
-                visit(cmd); 
+            for (int i = ctx.cmd().size() / 2; i < ctx.cmd().size(); i++) {
+                visit(ctx.cmd(i)); 
             }
+
             tab_spaces--;
             printTabs();
             codigoC.append("}\n");
         }
-       
-
         return null;
     }
 
 
-    @Override
-    public Void visitCmdEnquanto(AlgumaGrammarParser.CmdEnquantoContext ctx) {
-        printTabs();  
-        //System.out.println("enquanto " + ctx.expressao().getText() + " faca");
-        tab_spaces++;  
-        visitChildren(ctx);
-        tab_spaces--;  
-        printTabs();
-        //System.out.println("fim_enquanto");
-        return null;
-    }
-
-    public Void visitCmdPara(AlgumaGrammarParser.CmdParaContext ctx) {
-        printTabs();
-        //System.out.println("para " + ctx.IDENT().getText() + " <- " + ctx.exp_aritmetica(0).getText() + " ate " + ctx.exp_aritmetica(1).getText() + " faca");
-        tab_spaces++;
-        visitChildren(ctx);
-        tab_spaces--;
-        printTabs();
-        //System.out.println("fim_para");
-        return null;
-    }
     @Override
     public Void visitCmdAtribuicao(AlgumaGrammarParser.CmdAtribuicaoContext ctx) {
         printTabs();
@@ -396,14 +376,15 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
             //var variaveis_dados = determinarTipoExpressao(exp);
             var variaveis = determinarTipoExpressao(exp);
             for (int j=0; j<variaveis.size();j++){
-                count_params++;
-                var variavel_dados = variaveis.get(j);
                 
-                if(teve_cadeia){
-                    nome_params.append(",");
-                    teve_cadeia = false;
-                }
+                var variavel_dados = variaveis.get(j);
+
                 if (variavel_dados.tipo == AlgumaGrammar.INTEIRO){
+                    count_params++;
+                    if(teve_cadeia){
+                        nome_params.append(",");
+                        teve_cadeia = false;
+                    }
                     // não há operação
                     if(variavel_dados.operacao == null){
                         literals.append("%d");
@@ -413,6 +394,12 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                         teve_cadeia = false;
                     }
                 }else if(variavel_dados.tipo==AlgumaGrammar.REAL){
+                    count_params++;
+                    if(teve_cadeia){
+                        nome_params.append(",");
+                        teve_cadeia = false;
+                    }
+
                     if(variavel_dados.operacao == null){
                         literals.append("%f");
                         nome_params.append(variavel_dados.ident);
@@ -420,6 +407,11 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                         nome_params.append(variavel_dados.ident+variavel_dados.operacao);
                     }
                 }else if (variavel_dados.tipo==AlgumaGrammar.LITERAL && variavel_dados.value == null){
+                    count_params++;
+                    if(teve_cadeia){
+                        nome_params.append(",");
+                        teve_cadeia = false;
+                    }
                     if(variavel_dados.operacao == null){
                         literals.append("%s");
                         nome_params.append(variavel_dados.ident);
@@ -429,6 +421,7 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                 }else if (variavel_dados.tipo==AlgumaGrammar.LITERAL && variavel_dados.value != null){
                     literals.append(StringUtils.strip(variavel_dados.value,"\""));
                     teve_cadeia = true;
+                    
                 }
             }   
         }
@@ -444,14 +437,5 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
 
         return super.visitCmdEscreva(ctx);
     }
-
-    @Override
-    public Void visitDecl_local_global(AlgumaGrammarParser.Decl_local_globalContext ctx) {
-        
-
-        return super.visitDecl_local_global(ctx);
-    }
-
-    
     
 }

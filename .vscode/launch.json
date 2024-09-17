@@ -12,7 +12,7 @@
             "projectName": "alguma-grammar",
             "args": [
                 "C:\\Users\\letic\\OneDrive\\Documentos\\UFSCAR\\Compiladores_2023_1\\T5-Construcao-Compiladores\\alguma-grammar\\casos-de-teste\\5.casos_teste_t5\\1.entrada\\7.se_entao_impressao.alg",
-                "C:\\Users\\letic\\OneDrive\\Documentos\\UFSCAR\\Compiladores_2023_1\\T5-Construcao-Compiladores\\alguma-grammar\\tmp\\saida.txt"
+                "C:\\Users\\letic\\OneDrive\\Documentos\\UFSCAR\\Compiladores_2023_1\\T5-Construcao-Compiladores\\alguma-grammar\\tmp\\saida.alg"
             ]
         }
     ]
