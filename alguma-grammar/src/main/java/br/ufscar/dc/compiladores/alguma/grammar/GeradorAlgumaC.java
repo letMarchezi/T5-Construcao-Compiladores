@@ -134,7 +134,6 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
                                     AlgumaGrammar finalTipo = verificarTipo(variaveis);
                                     for (int i=0; i<termos.size(); i++){
                                         variaveis.get(i).tipo = finalTipo;
-                                        //System.out.println(variaveis.get(i).tipo);
                                     }
                                 }
                                 
@@ -205,7 +204,121 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
         return new Result(AlgumaGrammar.INVALIDO, null, null, null);
     }
 
+    public Result determinarExpressaoAritmetica(AlgumaGrammarParser.Exp_aritmeticaContext expr) {
+      
+        if (expr.termo() != null) {
+            List<AlgumaGrammarParser.TermoContext> termos = expr.termo();
+            
+            for (int i=0;i<termos.size();i++){
+                var termo = termos.get(i);
+                if (termo.fator() != null) {
+                    List<AlgumaGrammarParser.FatorContext> fatores = termo.fator();
+                    
+                    for (int j=0; j<fatores.size();j++){
+                        var fator = fatores.get(j); 
+                        if (fator.parcela() != null) {
+                            AlgumaGrammarParser.ParcelaContext parcela = fator.parcela(0);
+                            Result resultado_parcela = visitFatorIdent(parcela);
+                            return resultado_parcela;
+                        }
+                    }
+                }
+            }
+        }
+
+        return new Result(AlgumaGrammar.INVALIDO, null, null, null);   
+    }
+
+    @Override
+    public Void visitCmdCaso(AlgumaGrammarParser.CmdCasoContext ctx) {
+        printTabs();
+        tab_spaces++;
     
+        // Recupera o valor da expressao do switch
+        codigoC.append("switch (");
+        String resultado = determinarExpressaoAritmetica(ctx.exp_aritmetica()).value;
+        codigoC.append(resultado);
+        codigoC.append(") {\n");
+    
+        // Visita cada item (cases)
+        for (AlgumaGrammarParser.Item_selecaoContext item : ctx.selecao().item_selecao()) {
+            visitItem_selecao(item);
+        }
+    
+        // Checa se tem o bloco 'senao' (default case)
+        if (ctx.getChildCount() > ctx.selecao().getChildCount() + 1) {
+            // Printa o caso default
+            printTabs();
+            codigoC.append("default:\n");
+            tab_spaces++;
+    
+            // Visita o bloco senao
+            for (var cmd : ctx.cmd()) {
+                visit(cmd);
+            }
+    
+            tab_spaces--;
+        }
+    
+        // Fecha o bloco switch
+        tab_spaces--;
+        printTabs();
+        codigoC.append("}\n");
+    
+        return null;
+    }
+
+    @Override
+    public Void visitSelecao(AlgumaGrammarParser.SelecaoContext ctx) {
+        for (var item : ctx.item_selecao()) {
+            visit(item); //visita cada item da 'selecao'
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitItem_selecao(AlgumaGrammarParser.Item_selecaoContext ctx) {
+        // visita a lista de constantes
+        visit(ctx.constantes());
+
+        // visita os comandos
+        tab_spaces++;
+        for (var cmd : ctx.cmd()) {
+            visit(cmd);
+        }
+        
+        printTabs();
+        codigoC.append("break;\n"); // adiciona break após cada sentença
+        tab_spaces--;
+        return null;
+    }
+
+    @Override
+    public Void visitConstantes(AlgumaGrammarParser.ConstantesContext ctx) {
+        for (var numero_intervalo : ctx.numero_intervalo()) {
+            visit(numero_intervalo); // Visita cada numero no range das constantes
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitNumero_intervalo(AlgumaGrammarParser.Numero_intervaloContext ctx) {
+        // Se o range for NUM_INT..NUM_INT expande o range
+        if (ctx.getChildCount() == 3) {
+            int start = Integer.parseInt(ctx.NUM_INT(0).getText());
+            int end = Integer.parseInt(ctx.NUM_INT(1).getText());
+            for (int i = start; i <= end; i++) {
+                printTabs();
+                codigoC.append("case " + i + ":\n");
+            }
+        } else {
+            // Se for apenas um número, imprime o caso
+            printTabs();
+            codigoC.append("case " + ctx.NUM_INT(0).getText() + ":\n");
+        }
+        return null;
+    }
+
 
 
     // Registra os dias da semana e o período de tempo disponível para estudos
@@ -283,7 +396,7 @@ public class GeradorAlgumaC extends AlgumaGrammarBaseVisitor<Void> {
             if (ctx.getChild(i).getText().equals("fim_se")) {
                 break;
             }
-            visit(ctx.cmd(i));  // Visit each command in the 'entao' block
+            visit(ctx.cmd(i));  // Visita cada comando no bloco 'entao' 
         }
         // Fecha o bloco
         tab_spaces--;

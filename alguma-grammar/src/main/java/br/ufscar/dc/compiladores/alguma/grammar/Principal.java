@@ -39,7 +39,7 @@ public class Principal {
             ProgramaContext arvore = parser.programa();
             AlgumaSemantico as = new AlgumaSemantico();
             as.visitPrograma(arvore);
-            AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> System.out.println(s));
+            //AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> System.out.println(s));
             AlgumaSemanticoUtils.errosSemanticos.forEach((s) -> buffer.append(s + "\n"));
 
 
@@ -62,7 +62,7 @@ public class Principal {
 
         } catch (Exception ex) {
             // Detecção de exceções
-            System.err.println("Erro: " + ex.getMessage());
+            //System.err.println("Erro: " + ex.getMessage());
             buffer.append("Fim da compilacao\n");
         }
 
